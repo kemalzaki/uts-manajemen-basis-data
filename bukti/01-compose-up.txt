@@ -1,0 +1,22 @@
+$ docker compose up -d   (output pertama kali dijalankan)
+ Container postgres_ariel Healthy
+ Container pgadmin_ariel Started
+
+$ docker ps --filter name=ariel
+NAMES            IMAGE                STATUS                    PORTS
+pgadmin_ariel    dpage/pgadmin4       Up 14 seconds             0.0.0.0:44122->80/tcp, [::]:44122->80/tcp
+postgres_ariel   postgres:15-alpine   Up 20 seconds (healthy)   0.0.0.0:22122->5432/tcp, [::]:22122->5432/tcp
+
+=== BUKTI .env WAJIB: simulasi tanpa .env ===
+$ mv .env /tmp/env-disembunyikan && docker compose up -d
+error while interpolating services.postgres.environment.POSTGRES_USER: required variable POSTGRES_USER is missing a value: Setel POSTGRES_USER di file .env
+
+$ mv /tmp/env-disembunyikan .env   (.env dikembalikan)
+
+=== LOG BOOT postgres_ariel: skrip init dijalankan otomatis ===
+$ docker logs postgres_ariel 2>&1 | grep -E "initdb.d|init process complete|ready to accept"
+2026-11-01 09:32:27.107 UTC [42] LOG:  database system is ready to accept connections
+/usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/01_schema.sql
+/usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/02_roles.sql
+PostgreSQL init process complete; ready for start up.
+2026-11-01 09:32:27.861 UTC [1] LOG:  database system is ready to accept connections

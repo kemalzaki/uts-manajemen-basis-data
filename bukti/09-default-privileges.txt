@@ -1,0 +1,13 @@
+=== BUKTI DEFAULT PRIVILEGES: tabel baru buatan data_engineer otomatis di-CRUD backend_dev ===
+$ PGPASSWORD=data_engineer_122 psql -h localhost -p 22122 -U data_engineer -d uts_mbd -c "CREATE TABLE salam.tes_default_priv (id INT PRIMARY KEY, isi TEXT); INSERT INTO salam.tes_default_priv VALUES (1, 'dibuat data_engineer');"
+CREATE TABLE
+INSERT 0 1
+$ PGPASSWORD=backend_dev_122 psql ... -c "SELECT * FROM salam.tes_default_priv;" -c "UPDATE salam.tes_default_priv SET isi = 'diubah backend_dev' WHERE id = 1;"
+ id |         isi          
+----+----------------------
+  1 | dibuat data_engineer
+(1 row)
+
+UPDATE 1
+$ PGPASSWORD=data_engineer_122 psql ... -c "DROP TABLE salam.tes_default_priv;"
+DROP TABLE

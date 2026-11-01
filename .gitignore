@@ -1,0 +1,9 @@
+# Catatan: .env SENGAJA TIDAK diabaikan di sini karena dosen perlu memeriksa
+# isi .env sebagai bukti konfigurasi (tugas kelas, bukan proyek produksi).
+.DS_Store
+*.log
+.vscode/
+
+# Berkas soal milik dosen tidak ikut dipublikasikan ke repo publik;
+# inti ketentuan soal tersalin di README.md dan laporan/.
+soal/

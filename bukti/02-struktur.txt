@@ -1,0 +1,80 @@
+=== STRUKTUR SKEMA, TABEL, ROLE ===
+$ docker exec postgres_ariel psql -U postgres -d uts_mbd -c "\dn"
+      List of schemas
+  Name  |       Owner       
+--------+-------------------
+ public | pg_database_owner
+ salam  | data_engineer
+(2 rows)
+
+$ docker exec postgres_ariel psql -U postgres -d uts_mbd -c "\dt salam.*"
+                List of relations
+ Schema |      Name      | Type  |     Owner     
+--------+----------------+-------+---------------
+ salam  | mahasiswas     | table | data_engineer
+ salam  | nilais         | table | data_engineer
+ salam  | riwayat_status | table | data_engineer
+(3 rows)
+
+$ docker exec postgres_ariel psql -U postgres -d uts_mbd -c "\dv salam.*"
+                 List of relations
+ Schema |       Name        | Type |     Owner     
+--------+-------------------+------+---------------
+ salam  | v_rekap_mahasiswa | view | data_engineer
+(1 row)
+
+$ docker exec postgres_ariel psql -U postgres -d uts_mbd -c "\d salam.mahasiswas"
+                                    Table "salam.mahasiswas"
+    Column     |           Type           | Collation | Nullable |           Default            
+---------------+--------------------------+-----------+----------+------------------------------
+ id            | bigint                   |           | not null | generated always as identity
+ nim           | character varying(15)    |           | not null | 
+ nama          | character varying(100)   |           | not null | 
+ email         | character varying(120)   |           | not null | 
+ jenis_kelamin | character(1)             |           | not null | 
+ angkatan      | smallint                 |           | not null | 
+ ipk           | numeric(3,2)             |           | not null | 0.00
+ semester      | smallint                 |           | not null | 
+ status        | character varying(12)    |           | not null | 'aktif'::character varying
+ created_at    | timestamp with time zone |           | not null | now()
+Indexes:
+    "mahasiswas_pkey" PRIMARY KEY, btree (id)
+    "uq_mahasiswas_email" UNIQUE CONSTRAINT, btree (email)
+    "uq_mahasiswas_nim" UNIQUE CONSTRAINT, btree (nim)
+Check constraints:
+    "angkatan_range" CHECK (angkatan >= 2018 AND angkatan <= 2026)
+    "ipk_range" CHECK (ipk >= 0.00 AND ipk <= 4.00)
+    "jk_valid" CHECK (jenis_kelamin = ANY (ARRAY['L'::bpchar, 'P'::bpchar]))
+    "semester_range" CHECK (semester >= 1 AND semester <= 14)
+    "status_valid" CHECK (status::text = ANY (ARRAY['aktif'::character varying, 'cuti'::character varying, 'lulus'::character varying, 'keluar'::character varying]::text[]))
+Referenced by:
+    TABLE "salam.nilais" CONSTRAINT "fk_nilais_mahasiswa" FOREIGN KEY (mahasiswa_id) REFERENCES salam.mahasiswas(id) ON DELETE CASCADE
+Triggers:
+    trg_riwayat_status BEFORE UPDATE ON salam.mahasiswas FOR EACH ROW EXECUTE FUNCTION salam.catat_riwayat_status()
+
+$ docker exec postgres_ariel psql -U postgres -d uts_mbd -c "\du"
+                                     List of roles
+   Role name   |                         Attributes                         | Member of 
+---------------+------------------------------------------------------------+-----------
+ backend_dev   |                                                            | {}
+ bi_dev        |                                                            | {}
+ data_engineer |                                                            | {}
+ postgres      | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
+$ docker exec postgres_ariel psql -U postgres -d uts_mbd -c "SELECT c.relname AS objek, c.relkind AS jenis, pg_get_userbyid(c.relowner) AS owner FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'salam' ORDER BY c.relkind, c.relname;"
+         objek         | jenis |     owner     
+-----------------------+-------+---------------
+ mahasiswas_id_seq     | S     | data_engineer
+ nilais_id_seq         | S     | data_engineer
+ riwayat_status_id_seq | S     | data_engineer
+ mahasiswas_pkey       | i     | data_engineer
+ nilais_pkey           | i     | data_engineer
+ riwayat_status_pkey   | i     | data_engineer
+ uq_mahasiswas_email   | i     | data_engineer
+ uq_mahasiswas_nim     | i     | data_engineer
+ uq_nilais_matkul      | i     | data_engineer
+ mahasiswas            | r     | data_engineer
+ nilais                | r     | data_engineer
+ riwayat_status        | r     | data_engineer
+ v_rekap_mahasiswa     | v     | data_engineer
+(13 rows)
+

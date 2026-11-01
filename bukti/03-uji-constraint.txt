@@ -1,0 +1,74 @@
+=== UJI CONSTRAINT SKEMA SALAM (user postgres) ===
+$ docker exec -i postgres_ariel psql -U postgres -d uts_mbd -f - < db/uji/uji_constraint.sql
+
+=== A. PRIMARY KEY: INSERT id yang sudah ada (OVERRIDING) ===
+[GAGAL - diharapkan] duplikat primary key
+=== B. UNIQUE nim: NIM 1247050101 sudah dipakai Bunga ===
+[GAGAL - diharapkan] melanggar uq_mahasiswas_nim
+psql:<stdin>:15: ERROR:  duplicate key value violates unique constraint "mahasiswas_pkey"
+DETAIL:  Key (id)=(1) already exists.
+=== C. UNIQUE email: email Bunga dipakai ulang dengan NIM beda ===
+[GAGAL - diharapkan] melanggar uq_mahasiswas_email
+psql:<stdin>:20: ERROR:  duplicate key value violates unique constraint "uq_mahasiswas_nim"
+DETAIL:  Key (nim)=(1247050101) already exists.
+psql:<stdin>:25: ERROR:  duplicate key value violates unique constraint "uq_mahasiswas_email"
+DETAIL:  Key (email)=(bunga-122@yopmail.com) already exists.
+=== D. CHECK ipk: nilai 4.50 di luar 0.00-4.00 ===
+[GAGAL - diharapkan] melanggar ipk_range
+=== E. CHECK semester: nilai 15 di luar 1-14 ===
+[GAGAL - diharapkan] melanggar semester_range
+psql:<stdin>:29: ERROR:  new row for relation "mahasiswas" violates check constraint "ipk_range"
+DETAIL:  Failing row contains (3, 1247050110, Damar Wicaksana, damar-122@yopmail.com, L, 2024, 4.50, 5, aktif, 2026-11-01 09:32:27.330746+00).
+=== F. CHECK status: nilai tidak termasuk enum ===
+[GAGAL - diharapkan] melanggar status_valid
+psql:<stdin>:33: ERROR:  new row for relation "mahasiswas" violates check constraint "semester_range"
+DETAIL:  Failing row contains (3, 1247050110, Damar Wicaksana, damar-122@yopmail.com, L, 2024, 3.10, 15, aktif, 2026-11-01 09:32:27.330746+00).
+psql:<stdin>:37: ERROR:  new row for relation "mahasiswas" violates check constraint "status_valid"
+DETAIL:  Failing row contains (3, 1247050110, Damar Wicaksana, damar-122@yopmail.com, L, 2024, 3.10, 5, tidur, 2026-11-01 09:32:27.330746+00).
+=== G. CHECK nilai_huruf di tabel nilais ===
+[GAGAL - diharapkan] melanggar nilai_huruf_valid
+=== H. FK ON DELETE CASCADE: hapus mahasiswa, nilais ikut terhapus ===
+Sebelum delete (jumlah nilais milik NIM 1247050115):
+psql:<stdin>:42: ERROR:  new row for relation "nilais" violates check constraint "nilai_huruf_valid"
+DETAIL:  Failing row contains (8, 3, PBO121, Pemrograman Berorientasi Objek, 4, 5, 85.00, Z ).
+ jumlah_nilai 
+--------------
+            1
+(1 row)
+
+DELETE 1
+Sesudah delete (jumlah nilais milik NIM 1247050115, harus 0 karena CASCADE):
+ sisa_nilai 
+------------
+          0
+(1 row)
+
+=== I. TRIGGER audit: ubah status aktif -> lulus ===
+UPDATE 1
+Isi tabel audit riwayat_status (terisi otomatis oleh trigger):
+ id | mahasiswa_id | status_lama | status_baru |          diubah_pada          
+----+--------------+-------------+-------------+-------------------------------
+  2 |            3 | aktif       | lulus       | 2026-11-01 09:33:23.122374+00
+(1 row)
+
+=== J. TRANSAKSI: SAVEPOINT dan ROLLBACK TO ===
+Skenario: 2 insert sah mengapit 1 insert pelanggar CHECK.
+Rollback ke savepoint membatalkan HANYA insert yang salah.
+BEGIN
+INSERT 0 1
+SAVEPOINT
+[GAGAL - diharapkan] ipk 9.99 melanggar ipk_range di dalam transaksi
+psql:<stdin>:67: ERROR:  new row for relation "mahasiswas" violates check constraint "ipk_range"
+DETAIL:  Failing row contains (8, 9999990102, Transaksi Salah, trx2-122@yopmail.com, P, 2024, 9.99, 5, aktif, 2026-11-01 09:33:23.124563+00).
+ROLLBACK
+INSERT 0 1
+COMMIT
+Hasil commit: 9999990101 dan 9999990103 ada, 9999990102 tidak:
+    nim     |      nama      
+------------+----------------
+ 9999990101 | Transaksi Satu
+ 9999990103 | Transaksi Dua
+(2 rows)
+
+=== Bersih-bersih data transaksi ===
+DELETE 2

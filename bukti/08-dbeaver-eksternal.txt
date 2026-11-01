@@ -1,0 +1,32 @@
+=== BUKTI AKSES EKSTERNAL lewat DBeaver Community 26.2.0 (GUI di komputer host) ===
+
+Koneksi tersimpan di Database Navigator DBeaver (id: pg-utsmbd):
+  Nama koneksi : uts_mbd localhost:22122
+  JDBC URL     : jdbc:postgresql://localhost:22122/uts_mbd
+  Database     : uts_mbd
+  User         : backend_dev
+  Sumber       : %APPDATA%\DBeaverData\workspace6\General\.dbeaver\data-sources.json
+                 (password disimpan oleh DBeaver, save-password aktif)
+
+=== Langkah buka koneksi + uji di GUI DBeaver (Community, gratis) ===
+  1. Buka DBeaver, klik ganda koneksi "uts_mbd localhost:22122"
+     (password backend_dev_122 diminta sekali, lalu tersimpan)
+  2. Buka SQL Editor, jalankan salah satu:
+     - buka file db/uji/dbeaver_eksternal.sql lalu Alt+X, atau
+     - ketik @include D:\TUGAS ARIEL\BASIS DATA\UTS MANAJEMEN BASIS DATA\db\uji\dbeaver_eksternal.sql
+  3. Hasil SELECT mahasiswas tampil di panel hasil (bisa langsung di-screenshot
+     sebagai bukti tambahan)
+
+=== netstat -ano (baris memuat 22122) ===
+TCP    0.0.0.0:22122          0.0.0.0:0              LISTENING       15676
+TCP    [::]:22122             [::]:0                 LISTENING       15676
+TCP    [::1]:22122            [::]:0                 LISTENING       8080
+(0.0.0.0 = Docker Desktop backend mem-publish port 22122 ke host;
+ [::1] = wslrelay; PID 15676 = com.docker.backend)
+
+Catatan jujur: sesi DBeaver ditutup manual sebelum tangkapan layar diambil,
+sehingga tidak ada baris ESTABLISHED milik dbeaver.exe yang tercatat pada
+netstat di atas. Koneksi dari luar container sendiri sudah dibuktikan
+end-to-end lewat psql host (bukti/07-eksternal-psql.txt): client
+127.0.0.1:22122 -> server 172.24.0.2:5432 di jaringan internal docker,
+untuk ketiga user (backend_dev, bi_dev, data_engineer).

@@ -1,0 +1,67 @@
+=== UJI ROLE data_engineer (koneksi eksternal: localhost:22122) ===
+$ PGPASSWORD=data_engineer_122 psql -h localhost -p 22122 -U data_engineer -d uts_mbd -f db/uji/uji_data_engineer.sql
+
+=== 1. CREATE objek baru: schema + tabel ===
+CREATE SCHEMA
+CREATE TABLE
+=== 2. INSERT ke tabel buatan sendiri ===
+INSERT 0 2
+ id |     catat     
+----+---------------
+  1 | baris pertama
+  2 | baris kedua
+(2 rows)
+
+=== 3. ALTER TABLE: tambah kolom + constraint ===
+ALTER TABLE
+ALTER TABLE
+ column_name |        data_type         
+-------------+--------------------------
+ id          | bigint
+ catat       | character varying
+ dibuat_pada | timestamp with time zone
+(3 rows)
+
+=== 4. UPDATE + DELETE di tabel buatan sendiri ===
+UPDATE 1
+DELETE 1
+ id |        catat         
+----+----------------------
+  1 | baris pertama diubah
+(1 row)
+
+=== 5. ALTER objek milik proyek: ubah nama kolom tabel mahasiswas ===
+ALTER TABLE
+ALTER TABLE
+(nama kolom dikembalikan seperti semula, alter terbukti jalan)
+=== 6. CRUD tabel mahasiswas ===
+INSERT 0 1
+    nim     |       nama        | ipk  
+------------+-------------------+------
+ 1247050188 | Uji Data Engineer | 3.55
+(1 row)
+
+UPDATE 1
+    nim     | ipk  
+------------+------
+ 1247050188 | 3.58
+(1 row)
+
+DELETE 1
+ sisa 
+------
+    0
+(1 row)
+
+=== 7. DROP objek ===
+DROP TABLE
+DROP SCHEMA
+(tabel dan schema buatan sendiri sudah di-drop)
+=== 8. View v_rekap masih bisa dibaca (objek proyek utuh) ===
+    nim     |           nama           | jumlah_matkul | total_sks 
+------------+--------------------------+---------------+-----------
+ 1247050122 | M. Ariel Davinsyah Putra |             3 |        10
+ 1247050101 | Bunga Aulia Rahma        |             2 |         6
+ 1247050110 | Damar Wicaksana          |             1 |         3
+(3 rows)
+

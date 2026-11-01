@@ -1,0 +1,62 @@
+# UTS Manajemen Basis Data - Docker Compose
+# M. Ariel Davinsyah Putra - 1247050122
+#
+# Semua kredensial dan port DIBACA DARI FILE .env (tidak ada satu pun yang
+# di-hardcode di sini). Tanda ${VAR:?pesan} membuat docker compose LANGSUNG GAGAL
+# dengan pesan yang jelas apabila .env belum dibuat, sehingga terbukti bahwa
+# nilai memang diambil dari .env, bukan tertanam di berkas ini.
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres_ariel
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Setel POSTGRES_USER di file .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Setel POSTGRES_PASSWORD di file .env}
+      POSTGRES_DB: ${POSTGRES_DB:?Setel POSTGRES_DB di file .env}
+      PGDATA: /data/postgres
+    ports:
+      # 127.0.0.1: port hanya terbuka di komputer lokal, tidak ke seluruh
+      # jaringan (hasil perbaikan audit keamanan; akses eksternal dari host
+      # via localhost tetap berjalan)
+      - "127.0.0.1:${POSTGRES_PORT:?Setel POSTGRES_PORT di file .env}:5432"
+    volumes:
+      - pgdata_ariel:/data/postgres
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - net_ariel
+
+  pgadmin:
+    image: dpage/pgadmin4:9.18
+    container_name: pgadmin_ariel
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:?Setel PGADMIN_DEFAULT_EMAIL di file .env}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:?Setel PGADMIN_DEFAULT_PASSWORD di file .env}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports:
+      # 127.0.0.1: pgAdmin mode desktop terbuka tanpa login, maka port-nya
+      # wajib hanya mendengarkan komputer lokal (perbaikan audit keamanan)
+      - "127.0.0.1:${PGADMIN_PORT:?Setel PGADMIN_PORT di file .env}:80"
+    volumes:
+      - pgadmin_ariel:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - net_ariel
+
+volumes:
+  pgdata_ariel:
+  pgadmin_ariel:
+
+networks:
+  net_ariel:
+    driver: bridge

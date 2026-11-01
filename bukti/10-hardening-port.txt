@@ -1,0 +1,26 @@
+=== HARDENING SETELAH AUDIT: port diikat ke 127.0.0.1 + image dipin ===
+Perubahan docker-compose.yml:
+  - ports postgres : "127.0.0.1:${POSTGRES_PORT:?...}:5432"  (sebelumnya 0.0.0.0)
+  - ports pgadmin  : "127.0.0.1:${PGADMIN_PORT:?...}:80"     (sebelumnya 0.0.0.0)
+  - image pgadmin  : dpage/pgadmin4:9.18 (dipin, sebelumnya latest)
+Alasan: pgAdmin mode desktop terbuka tanpa login, jadi port-nya tidak boleh
+mendengarkan seluruh jaringan. Akses eksternal dari komputer host lewat
+localhost tetap berjalan (dibuktikan di bawah).
+
+=== docker ps (binding baru) ===
+NAMES            STATUS                        PORTS
+pgadmin_ariel    Up About a minute             127.0.0.1:44122->80/tcp
+postgres_ariel   Up About a minute (healthy)   127.0.0.1:22122->5432/tcp
+
+=== netstat -ano (baris memuat 22122 dan 44122) ===
+TCP    127.0.0.1:22122        0.0.0.0:0              LISTENING       15676
+TCP    127.0.0.1:44122        0.0.0.0:0              LISTENING       15676
+
+=== akses eksternal dari host tetap jalan (bi_dev lewat localhost:22122) ===
+ id |    nim     |           nama           
+----+------------+--------------------------
+  1 | 1247050122 | M. Ariel Davinsyah Putra
+  2 | 1247050101 | Bunga Aulia Rahma
+  3 | 1247050110 | Damar Wicaksana
+(3 rows)
+

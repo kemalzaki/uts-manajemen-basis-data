@@ -1,0 +1,51 @@
+=== UJI ROLE backend_dev (koneksi eksternal: localhost:22122) ===
+$ PGPASSWORD=backend_dev_122 psql -h localhost -p 22122 -U backend_dev -d uts_mbd -f db/uji/uji_backend_dev.sql
+
+=== 1. SELECT (Read) tabel mahasiswas ===
+ id |    nim     |           nama           | ipk  | semester | status 
+----+------------+--------------------------+------+----------+--------
+  1 | 1247050122 | M. Ariel Davinsyah Putra | 3.45 |        5 | aktif
+  2 | 1247050101 | Bunga Aulia Rahma        | 3.60 |        5 | aktif
+  3 | 1247050110 | Damar Wicaksana          | 3.10 |        5 | lulus
+(3 rows)
+
+=== 2. SELECT view v_rekap_mahasiswa ===
+    nim     |           nama           | jumlah_matkul | total_sks | rata_nilai 
+------------+--------------------------+---------------+-----------+------------
+ 1247050122 | M. Ariel Davinsyah Putra |             3 |        10 |      83.17
+ 1247050101 | Bunga Aulia Rahma        |             2 |         6 |      88.88
+ 1247050110 | Damar Wicaksana          |             1 |         3 |      74.25
+(3 rows)
+
+=== 3. INSERT (Create) satu mahasiswa ===
+INSERT 0 1
+ id |    nim     |      nama       
+----+------------+-----------------
+ 10 | 1247050199 | Uji Backend Dev
+(1 row)
+
+=== 4. UPDATE: ganti ipk mahasiswa uji ===
+UPDATE 1
+    nim     | ipk  
+------------+------
+ 1247050199 | 3.42
+(1 row)
+
+=== 5. INSERT ke tabel nilais (CRUD lintas tabel) ===
+INSERT 0 1
+ nilai_baru 
+------------
+          1
+(1 row)
+
+=== 6. DELETE (Delete) mahasiswa uji, nilais ikut CASCADE ===
+DELETE 1
+ sisa 
+------
+    0
+(1 row)
+
+=== 7. [GAGAL - diharapkan] CREATE TABLE ditolak untuk backend_dev ===
+psql:db/uji/uji_backend_dev.sql:39: ERROR:  permission denied for schema salam
+LINE 1: CREATE TABLE salam.tes_backend (
+                     ^

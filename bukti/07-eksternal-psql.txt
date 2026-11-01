@@ -1,0 +1,114 @@
+###############################################
+# BUKTI AKSES EKSTERNAL (dari luar container) #
+# psql client di komputer host -> localhost:22122 (port mapping host)
+###############################################
+
+$ psql --version
+psql (PostgreSQL) 18.3 (Debian 18.3-1+b1)
+
+== identitas server sebenarnya (dilihat dari luar) ==
+                                         version                                          
+------------------------------------------------------------------------------------------
+ PostgreSQL 15.19 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+(1 row)
+
+ ip_dalam_docker | port_dalam_docker 
+-----------------+-------------------
+ 172.24.0.2      |              5432
+(1 row)
+
+      Connection Information
+      Parameter       |   Value   
+----------------------+-----------
+ Database             | uts_mbd
+ Client User          | postgres
+ Host                 | localhost
+ Host Address         | 127.0.0.1
+ Server Port          | 22122
+ Options              | 
+ Protocol Version     | 3.0
+ Password Used        | true
+ GSSAPI Authenticated | false
+ Backend PID          | 3438
+ SSL Connection       | false
+ Superuser            | on
+ Hot Standby          | off
+(13 rows)
+
+
+== akses eksternal sebagai backend_dev ==
+       Connection Information
+      Parameter       |    Value    
+----------------------+-------------
+ Database             | uts_mbd
+ Client User          | backend_dev
+ Host                 | localhost
+ Host Address         | 127.0.0.1
+ Server Port          | 22122
+ Options              | 
+ Protocol Version     | 3.0
+ Password Used        | true
+ GSSAPI Authenticated | false
+ Backend PID          | 3439
+ SSL Connection       | false
+ Superuser            | off
+ Hot Standby          | off
+(13 rows)
+
+ current_user | jumlah_mahasiswa 
+--------------+------------------
+ backend_dev  |                3
+(1 row)
+
+
+== akses eksternal sebagai bi_dev ==
+      Connection Information
+      Parameter       |   Value   
+----------------------+-----------
+ Database             | uts_mbd
+ Client User          | bi_dev
+ Host                 | localhost
+ Host Address         | 127.0.0.1
+ Server Port          | 22122
+ Options              | 
+ Protocol Version     | 3.0
+ Password Used        | true
+ GSSAPI Authenticated | false
+ Backend PID          | 3440
+ SSL Connection       | false
+ Superuser            | off
+ Hot Standby          | off
+(13 rows)
+
+ current_user |    nim     |           nama           
+--------------+------------+--------------------------
+ bi_dev       | 1247050122 | M. Ariel Davinsyah Putra
+ bi_dev       | 1247050101 | Bunga Aulia Rahma
+ bi_dev       | 1247050110 | Damar Wicaksana
+(3 rows)
+
+
+== akses eksternal sebagai data_engineer ==
+        Connection Information
+      Parameter       |     Value     
+----------------------+---------------
+ Database             | uts_mbd
+ Client User          | data_engineer
+ Host                 | localhost
+ Host Address         | 127.0.0.1
+ Server Port          | 22122
+ Options              | 
+ Protocol Version     | 3.0
+ Password Used        | true
+ GSSAPI Authenticated | false
+ Backend PID          | 3441
+ SSL Connection       | false
+ Superuser            | off
+ Hot Standby          | off
+(13 rows)
+
+ current_user  | tabel_yang_bisa_dilihat 
+---------------+-------------------------
+ data_engineer |                       3
+(1 row)
+
