@@ -12,3 +12,6 @@ soal/
 # layar kerja antara _s*.png juga tidak perlu ikut.
 tools/
 shots/_s*.png
+
+# Laporan sesi pengerjaan (log internal), cukup di disk lokal.
+docs/reports/

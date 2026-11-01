@@ -138,12 +138,11 @@ di folder `bukti/`.
     dipakai di komputer ini, sesinya sering error dan sulit dioperasikan
     konsisten, sehingga tidak menghasilkan tangkapan layar bukti. Sebagai
     gantinya dipakai **Tabularis v0.30.0** (gratis, open source lisensi
-    Apache-2.0, punya MCP server bawaan yang juga gratis). Query bukti
-    (`db/uji/uji_eksternal_gui.sql`) dijalankan di SQL Console Tabularis
-    (`shots/shot_tabularis_*.png`) dan diulang lewat MCP bawaannya tanpa GUI
-    (`bukti/11-tabularis-mcp.txt`); hasilnya sama: database `uts_mbd`,
-    user `backend_dev`, server container `172.24.0.2:5432`. Percobaan DBeaver
-    yang tidak sampai tangkapan layar tercatat di `bukti/08-dbeaver-eksternal.txt`.
+    Apache-2.0). Query bukti (`db/uji/uji_eksternal_gui.sql`) dijalankan di
+    SQL Console Tabularis (`shots/shot_tabularis_*.png`); hasilnya:
+    database `uts_mbd`, user `backend_dev`, server container
+    `172.24.0.2:5432`. Percobaan DBeaver yang tidak sampai tangkapan layar
+    tercatat di `bukti/08-dbeaver-eksternal.txt`.
   - Jalur CLI `psql` dari host tetap tersedia dan sudah terbukti end-to-end
     (`bukti/07-eksternal-psql.txt`).
 
