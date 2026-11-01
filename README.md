@@ -131,9 +131,21 @@ di folder `bukti/`.
   (mode desktop, terbuka langsung tanpa login), lalu register server dengan host
   `postgres_ariel` (nama container) port `5432`. Koneksi ini tidak keluar dari
   jaringan Docker.
-- **Eksternal (dari luar Docker)**: DBeaver (atau psql) dari komputer host ke
-  `localhost:22122`, user misalnya `backend_dev`. Jalur ini melewati port mapping
-  host, sama seperti aplikasi eksternal mana pun.
+- **Eksternal (dari luar Docker)**: dari komputer host ke `localhost:22122`,
+  user misalnya `backend_dev`. Jalur ini melewati port mapping host, sama
+  seperti aplikasi eksternal mana pun.
+  - *Klarifikasi penggantian client GUI:* DBeaver Community (26.2.0) terkendala
+    dipakai di komputer ini, sesinya sering error dan sulit dioperasikan
+    konsisten, sehingga tidak menghasilkan tangkapan layar bukti. Sebagai
+    gantinya dipakai **Tabularis v0.30.0** (gratis, open source lisensi
+    Apache-2.0, punya MCP server bawaan yang juga gratis). Query bukti
+    (`db/uji/uji_eksternal_gui.sql`) dijalankan di SQL Console Tabularis
+    (`shots/shot_tabularis_*.png`) dan diulang lewat MCP bawaannya tanpa GUI
+    (`bukti/11-tabularis-mcp.txt`); hasilnya sama: database `uts_mbd`,
+    user `backend_dev`, server container `172.24.0.2:5432`. Percobaan DBeaver
+    yang tidak sampai tangkapan layar tercatat di `bukti/08-dbeaver-eksternal.txt`.
+  - Jalur CLI `psql` dari host tetap tersedia dan sudah terbukti end-to-end
+    (`bukti/07-eksternal-psql.txt`).
 
 ## Menjalankan uji bukti
 

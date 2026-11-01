@@ -7,3 +7,8 @@
 # Berkas soal milik dosen tidak ikut dipublikasikan ke repo publik;
 # inti ketentuan soal tersalin di README.md dan laporan/.
 soal/
+
+# Perkakas otomasi GUI di komputer pengerja (bukan bagian tugas); tangkapan
+# layar kerja antara _s*.png juga tidak perlu ikut.
+tools/
+shots/_s*.png

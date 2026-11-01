@@ -1,5 +1,11 @@
 === BUKTI AKSES EKSTERNAL lewat DBeaver Community 26.2.0 (GUI di komputer host) ===
 
+[PEMBARUAN 2026-11-01] DBeaver terkendala dipakai di komputer ini (sesi sering
+error dan sulit dioperasikan konsisten), sehingga bukti GUI eksternal yang final
+memakai pengganti gratis: Tabularis v0.30.0. Lihat bukti/11-tabularis-mcp.txt
+(transkrip MCP) dan shots/shot_tabularis_*.png (tangkapan layar SQL Console).
+Berkas di bawah tetap dipertahankan sebagai catatan jujur percobaan DBeaver.
+
 Koneksi tersimpan di Database Navigator DBeaver (id: pg-utsmbd):
   Nama koneksi : uts_mbd localhost:22122
   JDBC URL     : jdbc:postgresql://localhost:22122/uts_mbd
